@@ -102,9 +102,9 @@ export const rehabExercises: Exercise[] = [
     defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
   },
   {
-    id: "chair-extension",
-    name: "Extension över stolsrygg",
-    instruction: "Luta dig bakåt över stolsryggens kant. Mjuka sträck bakåt.",
+    id: "wall-slides",
+    name: "Wall slides",
+    instruction: "Rygg mot vägg. För armarna upp och ner med bibehållen kontakt.",
     category: "Mobilitet",
     focus: "Bröstrygg",
     defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
