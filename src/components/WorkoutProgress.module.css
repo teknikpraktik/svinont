@@ -1,0 +1,10 @@
+.progress {
+  /* Motsvarar ungefär två rader under övningsbeskrivningen. Samma
+     storlek/vikt som övningsbeskrivningen (ExerciseCard .instruction) -
+     progress är lika viktig att kunna läsa på avstånd som beskrivningen. */
+  margin-top: 2rem;
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
