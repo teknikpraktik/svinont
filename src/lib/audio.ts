@@ -59,12 +59,13 @@ export function unlockAudioContext(): void {
   oscillator.stop(context.currentTime + 0.001);
 }
 
-// Startsignal när en övning börjar: längre och något ljusare än nedräkningens
-// korta pip, men inte skarpt högfrekvent (1760 Hz upplevdes för gällt).
+// Startsignal när en övning börjar: en dov, lite längre ton, tydligt under
+// nedräkningens 880 Hz-pip. (Har justerats ned i omgångar - 1760 och 1175 Hz
+// upplevdes båda för gälla.)
 export function playNewBlockSound(): void {
   const context = getAudioContext();
   if (!context) return;
-  playTone(context, 1174.66, 0.15);
+  playTone(context, 392, 0.2);
 }
 
 export function playCountdownBeep(): void {
