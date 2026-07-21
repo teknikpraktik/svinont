@@ -7,8 +7,8 @@ interface AboutModalProps {
   onClose: () => void;
 }
 
-// Platshållartext för Svinont. Fyll i med appens riktiga syfte och ev.
-// disclaimer om att övningarna inte ersätter medicinsk rådgivning.
+// Kort om-text för Svinont. Uppdatera vid behov med disclaimer om att
+// övningarna inte ersätter medicinsk rådgivning.
 export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -16,18 +16,18 @@ export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
         <h2 className={styles.title}>Om Svinont</h2>
 
         <p className={styles.intro}>
-          Ett enkelt, fast rehabprogram – tryck igång och följ med, en övning i taget.
+          Ett lugnt rehabprogram – tryck igång och följ med, en övning i taget.
         </p>
         <p>
           Systerapp till Svinstark med samma passupplägg: en tydlig timer,
-          ljudsignal vid varje ny övning och en nedräkning på slutet. Skillnaden
-          är att Svinont kör samma bestämda övningar varje gång, i en minut var –
-          inga val, ingen slump.
+          ljudsignal vid varje ny övning och en nedräkning på slutet. Svinont kör
+          hela din rehab för rygg och knä varje gång, en minut per övning. Inga
+          val – ordningen varieras åt dig från pass till pass.
         </p>
 
         <h3>Så funkar det</h3>
         <ul>
-          <li>Tryck STARTA – programmet börjar direkt.</li>
+          <li>Tryck Starta pass – programmet börjar direkt.</li>
           <li>Varje övning pågår i en minut.</li>
           <li>En signal ljuder när det är dags att byta.</li>
         </ul>

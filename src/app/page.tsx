@@ -27,8 +27,7 @@ export default function Home() {
   }
 
   if (screen === "finished") {
-    if (!workout) return null;
-    return <FinishedScreen exerciseCount={workout.blocks.length} onGoToStart={goToStart} />;
+    return <FinishedScreen onStartNew={start} onGoToStart={goToStart} />;
   }
 
   if (!currentBlock || !workout) return null;

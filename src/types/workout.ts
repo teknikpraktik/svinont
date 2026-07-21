@@ -1,14 +1,28 @@
-// Minimal domänmodell för Svinont. Behåller samma typnamn som Svinstark
+// Domänmodell för Svinont. Behåller samma typnamn som Svinstark
 // (Exercise, Workout, WorkoutBlock, TimerState, Screen) så att den oförändrat
 // kopierade passmotorn (lib/timer.ts, hooks/useTimer.ts m.fl.) fungerar direkt.
-// Skillnaden mot Svinstark: en Exercise behöver bara det passkärmen visar
-// (namn + instruktion) - ingen klassificering, utrustning eller intensitet,
-// eftersom Svinont kör ett fast program utan generatorlogik.
+//
+// Skillnaden mot Svinstark: en rehabövning klassificeras med kategori och
+// fokusområde. Passkärmen använder bara namn + instruktion, men passgeneratorn
+// (lib/buildWorkout.ts) använder kategori och fokus för att skapa en varierad
+// men logisk ordning.
+
+// Övningens karaktär. Styr passgeneratorns fördelningsregler.
+export type ExerciseCategory = "Mobilitet" | "Stabilitet" | "Styrka";
+
+// Kroppsdel övningen riktar sig mot. Passgeneratorn försöker växla mellan dessa.
+export type FocusArea = "Rygg" | "Knä";
 
 export interface Exercise {
   id: string;
   name: string;
   instruction: string;
+  category: ExerciseCategory;
+  focus: FocusArea;
+  // Utrustning som behövs, t.ex. "Miniband". Utelämnas om ingen krävs.
+  equipment?: string;
+  // Standardtid i sekunder. Alla rehabövningar körs i 60 sekunder.
+  defaultDuration: number;
 }
 
 export interface WorkoutBlock {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { unlockAudioContext } from "@/lib/audio";
 import { buildWorkout } from "@/lib/buildWorkout";
 import { useAudio } from "@/hooks/useAudio";
@@ -9,16 +9,19 @@ import { useWakeLock } from "@/hooks/useWakeLock";
 import type { Screen, Workout } from "@/types/workout";
 
 // Orkestrerar skärmflödet Start -> Workout -> Paused -> Finished -> Start.
-// Samma struktur som Svinstarks useWorkout, men enklare: passet byggs ur den
-// fasta rehab-listan (buildWorkout) i stället för att slumpas, så det kan inte
-// misslyckas - därför inget felhanterings-/återförsöksflöde och ingen
-// settings-parameter till start().
+// Samma struktur som Svinstarks useWorkout, men enklare: passet byggs ur
+// rehab-övningsbanken (buildWorkout) och kan inte misslyckas - därför inget
+// felhanterings-/återförsöksflöde och ingen settings-parameter till start().
 //
 // soundEnabled tas emot live (inte som en frusen kopia) eftersom ljudikonen
 // visas och kan togglas på WorkoutScreen medan passet pågår.
 export function useWorkout(soundEnabled: boolean) {
   const [screen, setScreen] = useState<Screen>("start");
   const [workout, setWorkout] = useState<Workout | null>(null);
+
+  // Ordningen (övnings-id:n) för föregående pass, så att passgeneratorn kan
+  // undvika att upprepa exakt samma ordning två pass i rad.
+  const previousOrderRef = useRef<string[]>([]);
 
   const { playNewBlock, playCountdown, playFinish } = useAudio(soundEnabled);
 
@@ -40,14 +43,17 @@ export function useWorkout(soundEnabled: boolean) {
   // Skärmen ska inte dimmas/släckas så länge ett pass pågår, även vid paus.
   useWakeLock(workout !== null);
 
-  // Passet byggs och startar direkt vid knapptryckningen.
+  // Passet byggs och startar direkt vid knapptryckningen. Används både från
+  // startsidan och från slutsidans "Starta nytt pass".
   function start() {
     // Måste ske synkront här, i själva knapptryckningen, annars förblir
     // ljudet permanent avstängt på mobila webbläsare (se lib/audio.ts).
     if (soundEnabled) {
       unlockAudioContext();
     }
-    setWorkout(buildWorkout());
+    const nextWorkout = buildWorkout(previousOrderRef.current);
+    previousOrderRef.current = nextWorkout.blocks.map((block) => block.exercise.id);
+    setWorkout(nextWorkout);
     setScreen("workout");
   }
 

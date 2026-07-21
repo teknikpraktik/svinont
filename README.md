@@ -1,17 +1,28 @@
 # Svinont
 
 Systerapp till [Svinstark](../Svinstark) – samma design och samma passmotor
-(timer, ljudsignaler, wake lock, passkärm), men enklare: ett **fast program**
-av rehabövningar i stället för ett slumpat styrkepass.
+(timer, ljudsignaler, wake lock, passkärm), men en minimalistisk **rehabapp**:
+öppna, tryck **Starta pass**, gör dagens rehab, klart. Inga val innan passet.
 
-- Fast lista på ca 10 rehabövningar (`src/data/rehabExercises.ts`)
-- Varje övning körs i exakt en minut
-- Inga val på startsidan – bara STARTA
+- Fast övningsbank på 14 rehabövningar för rygg och knä (`src/data/rehabExercises.ts`)
+- Varje pass använder alla övningar, en gång var, i exakt en minut (≈14 min)
+- Ordningen varieras enligt rehab-regler av passgeneratorn (`src/lib/buildWorkout.ts`)
+- Inga val på startsidan – bara Starta pass
 
 Passmotorn (`src/lib/timer.ts`, `src/hooks/*`, `TimerDisplay`, `ExerciseCard`
-m.fl.) är kopierad oförändrad från Svinstark. Den slumpande generatorn är
-ersatt med `src/lib/buildWorkout.ts`, som bara mappar den fasta övningslistan
-till 60-sekundersblock.
+m.fl.) är kopierad oförändrad från Svinstark. Svinstarks slumpande styrke-
+generator är ersatt med en regelstyrd rehab-generator i `src/lib/buildWorkout.ts`.
+
+## Passgeneratorn
+
+Alla 14 övningar är alltid med – det som varierar är ordningen. Generatorn
+väljer en ordning som:
+
+- inte har två tunga knäövningar i rad,
+- inte har tre ryggövningar i rad,
+- har minst en stabilitetsövning i vardera passhalvan,
+- inte upprepar exakt samma ordning som föregående pass,
+- och växlar mellan rygg- och knäfokus så mycket som möjligt.
 
 ## Kör lokalt
 
@@ -22,7 +33,8 @@ npm run dev
 
 ## Att göra
 
-- **Byt ut övningarna** i `src/data/rehabExercises.ts` mot dina faktiska,
-  ordinerade rehabövningar. De som ligger där nu är generiska platshållare.
+- **Justera övningarna** i `src/data/rehabExercises.ts` efter det som är
+  ordinerat för dig. De som ligger där nu är generiska rehabövningar, inte en
+  medicinsk ordination.
 - Ersätt platshållar-ikonerna i `public/icons/` och `public/og-image.png`
   (kopior från Svinstark – visar fortfarande SS-märket).

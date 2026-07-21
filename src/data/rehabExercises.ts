@@ -1,71 +1,131 @@
 import type { Exercise } from "@/types/workout";
 
-// PLATSHÅLLARE. Det här är generiska, skonsamma rörlighets-/stabilitetsövningar
-// – INTE en medicinsk ordination. Byt ut hela listan mot dina faktiska,
-// ordinerade rehabövningar. Ordningen i listan är ordningen i passet, och varje
-// övning körs i en minut (se lib/buildWorkout.ts).
+// Svinonts övningsbank: 14 skonsamma rehabövningar för rygg och knä.
+// Varje pass använder samtliga övningar, en gång var, i 60 sekunder styck
+// (se lib/buildWorkout.ts). Ordningen sätts av passgeneratorn och varierar
+// mellan passen – listans ordning här har alltså ingen betydelse för passet.
 //
-// Enda kraven på en övning: unikt `id`, ett `name` och en `instruction`.
-// Lägg till eller ta bort poster fritt – passet anpassar sig efter listans längd.
+// OBS: Det här är generiska rörlighets-/stabilitets-/styrkeövningar, INTE en
+// medicinsk ordination. Följ det som är ordinerat för just dig.
+export const DEFAULT_EXERCISE_DURATION_SECONDS = 60;
+
 export const rehabExercises: Exercise[] = [
-  {
-    id: "neck-rotation",
-    name: "Nackrotation",
-    instruction:
-      "Sitt eller stå avslappnat. Vrid huvudet långsamt åt sidan, tillbaka till mitten och åt andra hållet. Mjuka, kontrollerade rörelser.",
-  },
-  {
-    id: "shoulder-rolls",
-    name: "Axelrullningar",
-    instruction:
-      "Rulla axlarna bakåt i stora, lugna cirklar. Andas jämnt. Byt riktning efter halva tiden.",
-  },
+  // --- Rygg ---
   {
     id: "cat-camel",
-    name: "Katt och kamel",
-    instruction:
-      "På alla fyra: runda ryggen mot taket, sänk sedan mjukt till svank. Följ andningen i rörelsen.",
+    name: "Cat-camel",
+    instruction: "Lugn rörelse mellan svank och rundad rygg.",
+    category: "Mobilitet",
+    focus: "Rygg",
+    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
   },
   {
-    id: "pelvic-tilt",
-    name: "Bäckentippning",
-    instruction:
-      "Ligg på rygg med böjda knän. Tippa bäckenet så att ländryggen pressas mot golvet, släpp sedan. Små, kontrollerade rörelser.",
+    id: "thoracic-rotation",
+    name: "Thorakal rotation",
+    instruction: "Rotera bröstryggen kontrollerat. Följ handen med blicken.",
+    category: "Mobilitet",
+    focus: "Rygg",
+    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
   },
   {
-    id: "glute-bridge",
-    name: "Höftlyft",
-    instruction:
-      "Ligg på rygg med böjda knän. Lyft höften till en rak linje från knä till axel, sänk kontrollerat.",
+    id: "wall-slides",
+    name: "Wall slides",
+    instruction: "Rygg mot vägg. För armarna upp och ner med bibehållen kontakt.",
+    category: "Mobilitet",
+    focus: "Rygg",
+    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
   },
   {
-    id: "knee-to-chest",
-    name: "Knä mot bröst",
-    instruction:
-      "Ligg på rygg. Dra ena knät mjukt mot bröstet och håll en kort stund, byt ben. Skonsam stretch i ländrygg och säte.",
+    id: "band-pull-aparts",
+    name: "Band pull-aparts",
+    instruction: "Dra bandet isär framför bröstet. Kläm ihop skulderbladen.",
+    category: "Styrka",
+    focus: "Rygg",
+    equipment: "Gummiband",
+    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
   },
   {
-    id: "ankle-pumps",
-    name: "Fotpumpar",
-    instruction:
-      "Sitt eller ligg. För foten upp och ner i vristen i lugnt tempo. Håll rörelsen mjuk genom hela intervallet.",
+    id: "face-pulls",
+    name: "Face pulls",
+    instruction: "Dra bandet mot ansiktet. Armbågarna högt, axlarna avslappnade.",
+    category: "Styrka",
+    focus: "Rygg",
+    equipment: "Gummiband",
+    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
   },
   {
-    id: "wall-angels",
-    name: "Väggänglar",
-    instruction:
-      "Stå med rygg och armar mot en vägg. För armarna långsamt upp och ner medan du håller kontakt mot väggen.",
+    id: "bird-dog",
+    name: "Bird dog",
+    instruction: "Sträck motsatt arm och ben. Håll bålen stabil.",
+    category: "Stabilitet",
+    focus: "Rygg",
+    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
   },
   {
-    id: "standing-hip-abduction",
-    name: "Höftabduktion stående",
-    instruction:
-      "Stå och håll i ett stöd. För ena benet rakt ut åt sidan och tillbaka, kontrollerat. Byt ben efter halva tiden.",
+    id: "dead-bug",
+    name: "Dead bug",
+    instruction: "Ligg på rygg. Sänk motsatt arm och ben, håll ländryggen stilla.",
+    category: "Stabilitet",
+    focus: "Rygg",
+    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
+  },
+  // --- Knä ---
+  {
+    id: "single-leg-balance",
+    name: "Enbensbalans",
+    instruction: "Stå stadigt på ett ben. Byt ben halvvägs.",
+    category: "Stabilitet",
+    focus: "Knä",
+    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
   },
   {
-    id: "seated-forward-fold",
-    name: "Sittande framåtfällning",
-    instruction:
-      "Sitt med benen fram. Fäll överkroppen mjukt framåt med rak rygg tills du känner en lätt stretch. Andas lugnt.",
+    id: "spanish-squat",
+    name: "Spanish squat",
+    instruction: "Band bakom knäna, sätt dig bakåt med rak rygg. (Alt: väggsittning.)",
+    category: "Styrka",
+    focus: "Knä",
+    equipment: "Gummiband",
+    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
+  },
+  {
+    id: "step-down",
+    name: "Step-down",
+    instruction: "Kontrollerad sänkning. Låt knät följa fotens riktning.",
+    category: "Styrka",
+    focus: "Knä",
+    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
+  },
+  {
+    id: "lateral-band-walk",
+    name: "Sidogång med miniband",
+    instruction: "Miniband runt benen. Gå i sidled med spänning i bandet.",
+    category: "Styrka",
+    focus: "Knä",
+    equipment: "Miniband",
+    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
+  },
+  {
+    id: "single-leg-hip-thrust",
+    name: "Enbens höftlyft",
+    instruction: "Ett ben i golvet. Lyft höften rakt upp, sänk kontrollerat.",
+    category: "Styrka",
+    focus: "Knä",
+    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
+  },
+  {
+    id: "single-leg-calf-raise",
+    name: "Enbens tåhävningar",
+    instruction: "Stå på ett ben. Res dig på tå och sänk långsamt.",
+    category: "Styrka",
+    focus: "Knä",
+    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
+  },
+  {
+    id: "gentle-knee-mobility",
+    name: "Lätt knärörlighet",
+    instruction: "Böj och sträck knät i skonsam, obelastad rörelse.",
+    category: "Mobilitet",
+    focus: "Knä",
+    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
   },
 ];

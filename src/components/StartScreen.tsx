@@ -44,12 +44,12 @@ export default function StartScreen({ onStart }: StartScreenProps) {
 
       <div className={styles.summary}>
         <p className={styles.summaryLine}>
-          {exerciseCount} övningar · {exerciseCount} min
+          {exerciseCount} övningar · ca {exerciseCount} min
         </p>
-        <p className={styles.summaryHint}>En minut per övning. Tryck igång och följ med.</p>
+        <p className={styles.summaryHint}>Dagens rehab för rygg och knä. Tryck igång och följ med.</p>
       </div>
 
-      <PrimaryButton onClick={onStart}>STARTA</PrimaryButton>
+      <PrimaryButton onClick={onStart}>Starta pass</PrimaryButton>
 
       <InstallPrompt />
 

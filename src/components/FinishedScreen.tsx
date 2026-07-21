@@ -2,18 +2,27 @@ import PrimaryButton from "@/components/PrimaryButton";
 import styles from "./FinishedScreen.module.css";
 
 interface FinishedScreenProps {
-  exerciseCount: number;
+  onStartNew: () => void;
   onGoToStart: () => void;
 }
 
-export default function FinishedScreen({ exerciseCount, onGoToStart }: FinishedScreenProps) {
+// Avskalad slutsida: ett lugnt kvitto och två vägar vidare. Medvetet ingen
+// statistik, poäng eller gamification - passet är klart, det räcker.
+export default function FinishedScreen({ onStartNew, onGoToStart }: FinishedScreenProps) {
   return (
     <div className={styles.screen}>
-      <p className={styles.message}>Klart!</p>
-      <div className={styles.summary}>
-        <p>{exerciseCount} övningar · {exerciseCount} min</p>
+      <div className={styles.message}>
+        <p className={styles.headline}>Passet är klart</p>
+        <p className={styles.sub}>Bra jobbat.</p>
+        <p className={styles.sub}>Vi ses imorgon.</p>
       </div>
-      <PrimaryButton onClick={onGoToStart}>Till start</PrimaryButton>
+
+      <div className={styles.actions}>
+        <PrimaryButton onClick={onStartNew}>Starta nytt pass</PrimaryButton>
+        <button className={styles.secondaryButton} onClick={onGoToStart}>
+          Till startsidan
+        </button>
+      </div>
     </div>
   );
 }
