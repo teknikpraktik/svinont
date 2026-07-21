@@ -59,13 +59,15 @@ export function unlockAudioContext(): void {
   oscillator.stop(context.currentTime + 0.001);
 }
 
-// Startsignal när en övning börjar: en dov, lite längre ton, tydligt under
-// nedräkningens 880 Hz-pip. (Har justerats ned i omgångar - 1760 och 1175 Hz
-// upplevdes båda för gälla.)
+// Startsignal när en övning börjar: en dov kvint (G4 + D5) som spelas
+// samtidigt - behåller den dova karaktären men får mer kropp än en ensam
+// 392 Hz-sinuston, som lätt försvinner i små mobilhögtalare. (Tonhöjden har
+// justerats ned i omgångar - 1760 och 1175 Hz upplevdes båda för gälla.)
 export function playNewBlockSound(): void {
   const context = getAudioContext();
   if (!context) return;
   playTone(context, 392, 0.2);
+  playTone(context, 587.33, 0.2);
 }
 
 export function playCountdownBeep(): void {
