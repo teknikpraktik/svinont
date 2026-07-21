@@ -43,9 +43,8 @@ export default function StartScreen({ onStart }: StartScreenProps) {
       </div>
 
       <div className={styles.summary}>
-        <p className={styles.summaryLine}>
-          {exerciseCount} övningar på {exerciseCount} minuter
-        </p>
+        <p className={styles.summaryLine}>{exerciseCount} övningar</p>
+        <p className={styles.summaryLine}>{exerciseCount} minuter</p>
       </div>
 
       <PrimaryButton onClick={onStart}>Starta pass</PrimaryButton>
