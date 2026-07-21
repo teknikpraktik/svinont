@@ -5,9 +5,6 @@ import type { Exercise } from "@/types/workout";
 // Passgeneratorn (lib/buildWorkout.ts) kör strikt varannan knä, varannan
 // bröstrygg med slumpad startövning - listans ordning här spelar ingen roll.
 //
-// `switchSides: true` betyder att användaren ska byta sida/ben efter halva
-// tiden; de övningarna får ett påminnelsepip vid 30 sekunder.
-//
 // OBS: Det här är generiska rehabövningar, INTE en medicinsk ordination.
 // Följ det som är ordinerat för just dig.
 export const DEFAULT_EXERCISE_DURATION_SECONDS = 60;
@@ -40,7 +37,6 @@ export const rehabExercises: Exercise[] = [
     category: "Styrka",
     focus: "Knä",
     defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
-    switchSides: true,
   },
   {
     id: "split-squat",
@@ -49,7 +45,6 @@ export const rehabExercises: Exercise[] = [
     category: "Styrka",
     focus: "Knä",
     defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
-    switchSides: true,
   },
   {
     id: "hip-abduction-band",
@@ -60,7 +55,6 @@ export const rehabExercises: Exercise[] = [
     focus: "Knä",
     equipment: "Träningsband",
     defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
-    switchSides: true,
   },
   {
     id: "single-leg-hip-thrust",
@@ -69,7 +63,6 @@ export const rehabExercises: Exercise[] = [
     category: "Styrka",
     focus: "Knä",
     defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
-    switchSides: true,
   },
   {
     id: "single-leg-rdl",
@@ -80,7 +73,6 @@ export const rehabExercises: Exercise[] = [
     focus: "Knä",
     equipment: "Träningsband",
     defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
-    switchSides: true,
   },
   // --- Bröstrygg (7) ---
   {
@@ -91,7 +83,6 @@ export const rehabExercises: Exercise[] = [
     category: "Mobilitet",
     focus: "Bröstrygg",
     defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
-    switchSides: true,
   },
   {
     id: "cat-cow",

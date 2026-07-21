@@ -72,44 +72,12 @@ export function playCountdownBeep(): void {
   playTone(context, 880, 0.08);
 }
 
-// Sidbytespåminnelse vid halvtid: två snabba pip, tydligt skilt från både
-// nedräkningens enkla pip (880 Hz × 1) och startsignalen (1760 Hz, längre).
+// Halvtidsmarkering (30 s kvar): ett enkelt pip, tonhöjdsmässigt skilt från
+// nedräkningens pip (880 Hz) och startsignalen (1760 Hz, längre).
 export function playHalfwayBeep(): void {
   const context = getAudioContext();
   if (!context) return;
-  playTone(context, 987.77, 0.08);
-  playTone(context, 987.77, 0.08, 0.14);
-}
-
-// Läser upp övningens namn med Web Speech API när en ny övning börjar.
-// Talsyntesen finns inbyggd i alla moderna mobil-/desktopwebbläsare; saknas
-// den (eller svensk röst) blir det bara tyst - pipsignalerna finns kvar.
-export function speakExerciseName(name: string): void {
-  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
-
-  // Avbryt ev. pågående uppläsning (t.ex. vid snabba "hoppa över"-tryck) så
-  // att uppläsningar inte köas upp och släpar efter passet.
-  window.speechSynthesis.cancel();
-
-  const utterance = new SpeechSynthesisUtterance(name);
-  utterance.lang = "sv-SE";
-  utterance.rate = 1;
-  window.speechSynthesis.speak(utterance);
-}
-
-// Tystar en ev. pågående uppläsning, t.ex. när passet avbryts mitt i en
-// övnings namn.
-export function cancelSpeech(): void {
-  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
-  window.speechSynthesis.cancel();
-}
-
-// Talsyntesen behöver, precis som AudioContext, väckas inifrån en riktig
-// användarinteraktion på vissa mobila webbläsare. En tom uppläsning i
-// klick-handlern låser upp senare uppläsningar som triggas av timern.
-export function unlockSpeech(): void {
-  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
-  window.speechSynthesis.speak(new SpeechSynthesisUtterance(""));
+  playTone(context, 987.77, 0.1);
 }
 
 export function playFinishSound(): void {

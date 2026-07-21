@@ -14,6 +14,7 @@ interface WorkoutScreenProps {
   isPaused: boolean;
   onPause: () => void;
   onResume: () => void;
+  onStartNext: () => void;
   onStop: () => void;
   onSkip: () => void;
   onSoundEnabledChange: (soundEnabled: boolean) => void;
@@ -31,14 +32,20 @@ export default function WorkoutScreen({
   isPaused,
   onPause,
   onResume,
+  onStartNext,
   onStop,
   onSkip,
   onSoundEnabledChange,
 }: WorkoutScreenProps) {
   const exerciseProgress = getExerciseProgress(blocks, timerState.currentBlock);
 
+  // Väntläge mellan två övningar: nästa övning visas med full tid och startas
+  // av användaren via den stora Starta-knappen.
+  const isAwaitingNext = timerState.isAwaitingNext;
+
   const nextBlock = blocks[timerState.currentBlock + 1] ?? null;
-  const showNextUp = nextBlock !== null && timerState.remainingSeconds <= NEXT_UP_SECONDS;
+  const showNextUp =
+    nextBlock !== null && !isAwaitingNext && timerState.remainingSeconds <= NEXT_UP_SECONDS;
 
   return (
     <div className={styles.screen}>
@@ -80,6 +87,10 @@ export default function WorkoutScreen({
         {isPaused ? (
           <button className={styles.actionButton} onClick={onResume}>
             Fortsätt
+          </button>
+        ) : isAwaitingNext ? (
+          <button className={`${styles.actionButton} ${styles.actionButtonAccent}`} onClick={onStartNext}>
+            Starta
           </button>
         ) : (
           <button className={styles.actionButton} onClick={onPause}>

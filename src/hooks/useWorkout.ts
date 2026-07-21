@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useRef, useState } from "react";
-import { cancelSpeech, unlockAudioContext } from "@/lib/audio";
+import { unlockAudioContext } from "@/lib/audio";
 import { buildWorkout } from "@/lib/buildWorkout";
 import { useAudio } from "@/hooks/useAudio";
 import { useTimer } from "@/hooks/useTimer";
@@ -13,6 +13,10 @@ import type { Screen, Workout } from "@/types/workout";
 // rehab-övningsbanken (buildWorkout) och kan inte misslyckas - därför inget
 // felhanterings-/återförsöksflöde och ingen settings-parameter till start().
 //
+// När en övning löper ut går timern i väntläge (timerState.isAwaitingNext):
+// nästa övning visas med full tid, men klockan startar först när användaren
+// trycker igång den via startNextExercise().
+//
 // soundEnabled tas emot live (inte som en frusen kopia) eftersom ljudikonen
 // visas och kan togglas på WorkoutScreen medan passet pågår.
 export function useWorkout(soundEnabled: boolean) {
@@ -23,52 +27,31 @@ export function useWorkout(soundEnabled: boolean) {
   // undvika att upprepa exakt samma ordning två pass i rad.
   const previousOrderRef = useRef<string[]>([]);
 
-  // Spegel av workout-statet för timer-callbacks (onBlockChange/onHalfway),
-  // som behöver slå upp övningen synkront utan att göra timern beroende av
-  // React-statets renderingscykel.
-  const workoutRef = useRef<Workout | null>(null);
-
-  const { playNewBlock, playCountdown, playHalfway, playFinish, announceExercise } =
-    useAudio(soundEnabled);
+  const { playNewBlock, playCountdown, playHalfway, playFinish } = useAudio(soundEnabled);
 
   const handleFinish = useCallback(() => {
     playFinish();
     setScreen("finished");
   }, [playFinish]);
 
-  // Startsignal + röstuppläsning av den nya övningens namn.
-  const handleBlockChange = useCallback(
-    (blockIndex: number) => {
-      playNewBlock();
-      const block = workoutRef.current?.blocks[blockIndex];
-      if (block) announceExercise(block.exercise.name);
-    },
-    [playNewBlock, announceExercise]
-  );
-
-  // Halvtidspip endast för övningar där användaren ska byta sida/ben.
-  const handleHalfway = useCallback(
-    (blockIndex: number) => {
-      const block = workoutRef.current?.blocks[blockIndex];
-      if (block?.exercise.switchSides) playHalfway();
-    },
-    [playHalfway]
-  );
-
   const timerCallbacks = useMemo(
     () => ({
       onFinish: handleFinish,
-      onBlockChange: handleBlockChange,
+      onBlockChange: playNewBlock,
       onCountdown: playCountdown,
-      onHalfway: handleHalfway,
+      onHalfway: playHalfway,
     }),
-    [handleFinish, handleBlockChange, playCountdown, handleHalfway]
+    [handleFinish, playNewBlock, playCountdown, playHalfway]
   );
 
-  const { timerState, pause: pauseTimer, resume: resumeTimer, stop: stopTimer, skip: skipTimer } = useTimer(
-    workout,
-    timerCallbacks
-  );
+  const {
+    timerState,
+    pause: pauseTimer,
+    resume: resumeTimer,
+    stop: stopTimer,
+    skip: skipTimer,
+    startNextBlock,
+  } = useTimer(workout, timerCallbacks);
 
   // Skärmen ska inte dimmas/släckas så länge ett pass pågår, även vid paus.
   useWakeLock(workout !== null);
@@ -82,17 +65,22 @@ export function useWorkout(soundEnabled: boolean) {
     }
     const nextWorkout = buildWorkout(previousOrderRef.current);
     previousOrderRef.current = nextWorkout.blocks.map((block) => block.exercise.id);
-    workoutRef.current = nextWorkout;
     setWorkout(nextWorkout);
     setScreen("workout");
-    // Uppläsningen av första övningen sker också synkront i knapptryckningen -
-    // det låser samtidigt upp talsyntesen för resten av passet (se lib/audio.ts).
-    announceExercise(nextWorkout.blocks[0].exercise.name);
   }
 
-  // Paus giltigt endast från "workout", återuppta endast från "paused".
-  function pause() {
+  // Startar den väntande övningen (giltigt endast i timerns väntläge -
+  // startNextBlock är själv en no-op annars). Startsignalen spelas via
+  // timerns onBlockChange.
+  function startNextExercise() {
     if (screen !== "workout") return;
+    startNextBlock();
+  }
+
+  // Paus giltigt endast under en löpande övning (inte i väntläget, som redan
+  // står stilla), återuppta endast från "paused".
+  function pause() {
+    if (screen !== "workout" || !timerState.isRunning) return;
     pauseTimer();
     setScreen("paused");
   }
@@ -106,28 +94,19 @@ export function useWorkout(soundEnabled: boolean) {
   function stop() {
     if (screen !== "workout" && screen !== "paused") return;
     stopTimer();
-    cancelSpeech();
-    workoutRef.current = null;
     setWorkout(null);
     setScreen("start");
   }
 
-  // Giltigt endast under pågående pass. skipTimer avslutar passet själv (via
-  // onFinish -> handleFinish) om det var sista övningen. Ingen startsignal vid
-  // skip (avsiktligt tyst, se lib/timer.ts), men den nya övningens namn läses
-  // upp - övningen börjar ju nu.
+  // Hoppar över aktuell/väntande övning. skipTimer avslutar passet själv (via
+  // onFinish -> handleFinish) om det var sista övningen.
   function skip() {
     if (screen !== "workout") return;
-    const stateAfterSkip = skipTimer();
-    if (stateAfterSkip?.isRunning) {
-      const block = workoutRef.current?.blocks[stateAfterSkip.currentBlock];
-      if (block) announceExercise(block.exercise.name);
-    }
+    skipTimer();
   }
 
   function goToStart() {
     if (screen !== "finished") return;
-    workoutRef.current = null;
     setWorkout(null);
     setScreen("start");
   }
@@ -140,6 +119,7 @@ export function useWorkout(soundEnabled: boolean) {
     currentBlock,
     timerState,
     start,
+    startNextExercise,
     pause,
     resume,
     stop,

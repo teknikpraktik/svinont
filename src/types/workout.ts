@@ -24,9 +24,6 @@ export interface Exercise {
   equipment?: string;
   // Standardtid i sekunder. Alla rehabövningar körs i 60 sekunder.
   defaultDuration: number;
-  // Sant för övningar där användaren byter sida/ben efter halva tiden -
-  // dessa får ett påminnelsepip vid halvtid.
-  switchSides?: boolean;
 }
 
 export interface WorkoutBlock {
@@ -46,6 +43,10 @@ export interface TimerState {
   remainingSeconds: number;
   isRunning: boolean;
   isPaused: boolean;
+  // Sant mellan två övningar: föregående block är klart och timern väntar på
+  // att användaren själv startar nästa övning (currentBlock pekar då redan på
+  // den kommande övningen, med full tid kvar).
+  isAwaitingNext: boolean;
 }
 
 export type Screen = "start" | "workout" | "paused" | "finished";

@@ -24,6 +24,7 @@ export function useTimer(workout: Workout | null, callbacks: UseTimerCallbacks =
     remainingSeconds: workout?.blocks[0]?.duration ?? 0,
     isRunning: false,
     isPaused: false,
+    isAwaitingNext: false,
   }));
   const timerRef = useRef<WorkoutTimer | null>(null);
 
@@ -62,12 +63,7 @@ export function useTimer(workout: Workout | null, callbacks: UseTimerCallbacks =
     pause: () => timerRef.current?.pause(),
     resume: () => timerRef.current?.resume(),
     stop: () => timerRef.current?.stop(),
-    // Returnerar timerns läge efter hoppet, så att anroparen synkront kan
-    // läsa vilken övning som blev aktuell (React-statet uppdateras först i
-    // nästa rendering).
-    skip: () => {
-      timerRef.current?.skip();
-      return timerRef.current?.getState() ?? null;
-    },
+    skip: () => timerRef.current?.skip(),
+    startNextBlock: () => timerRef.current?.startNextBlock(),
   };
 }

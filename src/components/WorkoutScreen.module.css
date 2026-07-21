@@ -93,3 +93,12 @@
   font-weight: 600;
   cursor: pointer;
 }
+
+/* Starta-knappen i väntläget mellan två övningar - accentfärgad som
+   PrimaryButton, eftersom den är skärmens huvudhandling just då. */
+.actionButtonAccent {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-contrast);
+  font-weight: 700;
+}

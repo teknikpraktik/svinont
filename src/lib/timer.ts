@@ -18,10 +18,11 @@ export function getExerciseProgress(
 
 export interface WorkoutTimerCallbacks {
   onTick?: (state: TimerState) => void;
+  // Signaleras när ett block faktiskt börjar räkna: vid startNextBlock().
   onBlockChange?: (blockIndex: number) => void;
   onCountdown?: (remainingSeconds: number) => void;
-  // Signaleras en gång per block när halva blocktiden passerats. Används för
-  // sidbytespåminnelsen i övningar med switchSides.
+  // Signaleras en gång per block när halva blocktiden passerats (30 s kvar
+  // vid 60-sekundersblock). Används som sidbytes-/halvtidsmarkering.
   onHalfway?: (blockIndex: number) => void;
   onFinish?: () => void;
 }
@@ -47,6 +48,7 @@ export class WorkoutTimer {
       remainingSeconds: this.blockDurationsSeconds[0] ?? 0,
       isRunning: false,
       isPaused: false,
+      isAwaitingNext: false,
     };
   }
 
@@ -88,33 +90,61 @@ export class WorkoutTimer {
 
   stop(): void {
     this.stopTicking();
-    this.state = { ...this.state, isRunning: false, isPaused: false };
+    this.state = { ...this.state, isRunning: false, isPaused: false, isAwaitingNext: false };
     this.emit();
   }
 
-  // Hoppar direkt till nästa block med dess fulla tid, till skillnad från
-  // tick()'s katch-up-logik (som skjuter fram deadline kumulativt för att
-  // hålla wall-clock-schemat efter bakgrundsfördröjning). Ett skip är en
-  // explicit, engångs-handling just nu - nästa block ska få hela sin tid
-  // räknat från detta ögonblick, inte från när det "borde" ha startat.
-  // Anropar avsiktligt inte onBlockChange (som triggar skidstart-tonen) -
-  // ett skip ska vara tyst, bara nästa övning ska starta.
+  // Hoppar över den aktuella övningen: går till väntläget inför nästa övning
+  // (samma läge som när en övning löper ut), eller avslutar passet om det var
+  // sista övningen. Fungerar både under pågående övning och i väntläget
+  // (då hoppas den väntande övningen över).
   skip(): void {
-    if (!this.state.isRunning) return;
+    if (!this.state.isRunning && !this.state.isAwaitingNext) return;
 
     const isLastBlock = this.state.currentBlock >= this.blockDurationsSeconds.length - 1;
     if (isLastBlock) {
       this.stopTicking();
-      this.state = { ...this.state, remainingSeconds: 0, isRunning: false, isPaused: false };
+      this.state = {
+        ...this.state,
+        remainingSeconds: 0,
+        isRunning: false,
+        isPaused: false,
+        isAwaitingNext: false,
+      };
       this.emit();
       this.callbacks.onFinish?.();
       return;
     }
 
-    const nextBlock = this.state.currentBlock + 1;
-    this.blockDeadline = Date.now() + this.blockDurationsSeconds[nextBlock] * 1000;
+    this.enterAwaitNext(this.state.currentBlock + 1);
+  }
+
+  // Startar den väntande övningen. Blocket får hela sin tid räknat från detta
+  // ögonblick - det är hela poängen med väntläget: användaren väljer själv
+  // när nästa övning ska börja.
+  startNextBlock(): void {
+    if (!this.state.isAwaitingNext) return;
+
+    this.blockDeadline = Date.now() + this.blockDurationsSeconds[this.state.currentBlock] * 1000;
+    this.state = { ...this.state, isRunning: true, isAwaitingNext: false };
+    this.beginTicking();
+    this.emit();
+    this.callbacks.onBlockChange?.(this.state.currentBlock);
+  }
+
+  // Ställer timern i väntläge inför ett kommande block: blocket är valt och
+  // visas med full tid, men klockan står stilla tills startNextBlock().
+  private enterAwaitNext(blockIndex: number): void {
+    this.stopTicking();
     this.halfwayFired = false;
-    this.state = { ...this.state, currentBlock: nextBlock, remainingSeconds: this.blockDurationsSeconds[nextBlock] };
+    this.state = {
+      ...this.state,
+      currentBlock: blockIndex,
+      remainingSeconds: this.blockDurationsSeconds[blockIndex],
+      isRunning: false,
+      isPaused: false,
+      isAwaitingNext: true,
+    };
     this.emit();
   }
 
@@ -131,24 +161,29 @@ export class WorkoutTimer {
   }
 
   private tick(): void {
-    let remainingMs = this.blockDeadline - Date.now();
+    const remainingMs = this.blockDeadline - Date.now();
 
-    while (remainingMs <= 0) {
+    // Blocket är slut. Sista blocket avslutar passet; annars väntläge tills
+    // användaren själv startar nästa övning. (Ingen wall-clock-katch-up
+    // längre: en bakgrundad flik landar som mest ett block framåt, i vila.)
+    if (remainingMs <= 0) {
       const isLastBlock = this.state.currentBlock >= this.blockDurationsSeconds.length - 1;
       if (isLastBlock) {
         this.stopTicking();
-        this.state = { ...this.state, remainingSeconds: 0, isRunning: false, isPaused: false };
+        this.state = {
+          ...this.state,
+          remainingSeconds: 0,
+          isRunning: false,
+          isPaused: false,
+          isAwaitingNext: false,
+        };
         this.emit();
         this.callbacks.onFinish?.();
         return;
       }
 
-      const nextBlock = this.state.currentBlock + 1;
-      this.blockDeadline += this.blockDurationsSeconds[nextBlock] * 1000;
-      this.halfwayFired = false;
-      this.state = { ...this.state, currentBlock: nextBlock };
-      this.callbacks.onBlockChange?.(nextBlock);
-      remainingMs = this.blockDeadline - Date.now();
+      this.enterAwaitNext(this.state.currentBlock + 1);
+      return;
     }
 
     // TICK_INTERVAL_MS är tätare än en hel sekund (för precision kring

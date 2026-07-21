@@ -6,7 +6,6 @@ import {
   playFinishSound,
   playHalfwayBeep,
   playNewBlockSound,
-  speakExerciseName,
 } from "@/lib/audio";
 
 // Spelar ljud endast om inställningen är påslagen (C.19: "Ljud ska kunna
@@ -29,12 +28,5 @@ export function useAudio(enabled: boolean) {
     if (enabled) playFinishSound();
   }, [enabled]);
 
-  const announceExercise = useCallback(
-    (name: string) => {
-      if (enabled) speakExerciseName(name);
-    },
-    [enabled]
-  );
-
-  return { playNewBlock, playCountdown, playHalfway, playFinish, announceExercise };
+  return { playNewBlock, playCountdown, playHalfway, playFinish };
 }

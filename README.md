@@ -11,7 +11,8 @@ Systerapp till [Svinstark](../Svinstark) – samma design och samma passmotor
 - Inga val på startsidan – bara Starta pass
 
 Passmotorn (`src/lib/timer.ts`, `src/hooks/*`, `TimerDisplay`, `ExerciseCard`
-m.fl.) kommer från Svinstark, utökad med halvtidssignal och röstuppläsning.
+m.fl.) kommer från Svinstark, utökad med halvtidssignal och manuell start av
+nästa övning.
 
 ## Passgeneratorn
 
@@ -23,9 +24,11 @@ Alla 14 övningar är alltid med – det som varierar är ordningen:
 
 ## Under passet
 
-- Övningens namn läses upp med talsyntes när den börjar (om ljudet är på).
-- Övningar med sidbyte (`switchSides`) får ett dubbelpip vid halvtid.
+- Ett pip vid halvtid (30 s kvar) - t.ex. som sidbytesmarkering.
+- Nedräkningspip vid 3-2-1 och en startsignal när en övning börjar.
 - Under de sista 10 sekunderna visas "Nästa övning: …".
+- När en övning är klar väntar appen: nästa övning visas med full tid och
+  startar först när användaren trycker på Starta.
 
 ## Kör lokalt
 
