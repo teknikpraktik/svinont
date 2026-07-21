@@ -20,6 +20,9 @@ export interface WorkoutTimerCallbacks {
   onTick?: (state: TimerState) => void;
   onBlockChange?: (blockIndex: number) => void;
   onCountdown?: (remainingSeconds: number) => void;
+  // Signaleras en gång per block när halva blocktiden passerats. Används för
+  // sidbytespåminnelsen i övningar med switchSides.
+  onHalfway?: (blockIndex: number) => void;
   onFinish?: () => void;
 }
 
@@ -34,6 +37,7 @@ export class WorkoutTimer {
   private intervalId: ReturnType<typeof setInterval> | null = null;
   private blockDeadline = 0;
   private remainingMsWhenPaused = 0;
+  private halfwayFired = false;
 
   constructor(workout: Workout, callbacks: WorkoutTimerCallbacks = {}) {
     this.blockDurationsSeconds = workout.blocks.map((block) => block.duration);
@@ -109,6 +113,7 @@ export class WorkoutTimer {
 
     const nextBlock = this.state.currentBlock + 1;
     this.blockDeadline = Date.now() + this.blockDurationsSeconds[nextBlock] * 1000;
+    this.halfwayFired = false;
     this.state = { ...this.state, currentBlock: nextBlock, remainingSeconds: this.blockDurationsSeconds[nextBlock] };
     this.emit();
   }
@@ -140,6 +145,7 @@ export class WorkoutTimer {
 
       const nextBlock = this.state.currentBlock + 1;
       this.blockDeadline += this.blockDurationsSeconds[nextBlock] * 1000;
+      this.halfwayFired = false;
       this.state = { ...this.state, currentBlock: nextBlock };
       this.callbacks.onBlockChange?.(nextBlock);
       remainingMs = this.blockDeadline - Date.now();
@@ -154,6 +160,16 @@ export class WorkoutTimer {
     if (remainingSeconds === previousSeconds) return;
 
     this.state = { ...this.state, remainingSeconds };
+
+    // Halvtidssignal: signaleras exakt en gång per block, när återstående tid
+    // passerar halva blocktiden. Flaggan (i stället för en exakt jämförelse
+    // med halvtidssekunden) gör att signalen inte tappas bort om en bakgrundad
+    // flik hoppar över just det sekundvärdet.
+    const halfwaySeconds = Math.floor(this.blockDurationsSeconds[this.state.currentBlock] / 2);
+    if (!this.halfwayFired && remainingSeconds <= halfwaySeconds && remainingSeconds > 0) {
+      this.halfwayFired = true;
+      this.callbacks.onHalfway?.(this.state.currentBlock);
+    }
 
     // Normalt minskar remainingSeconds med exakt 1 per tick (250 ms-
     // intervallet är fyra gånger tätare än en sekund), men en bakgrundad

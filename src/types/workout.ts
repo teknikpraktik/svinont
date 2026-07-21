@@ -7,11 +7,12 @@
 // (lib/buildWorkout.ts) använder kategori och fokus för att skapa en varierad
 // men logisk ordning.
 
-// Övningens karaktär. Styr passgeneratorns fördelningsregler.
+// Övningens karaktär. Ren metadata för övningsbanken.
 export type ExerciseCategory = "Mobilitet" | "Stabilitet" | "Styrka";
 
-// Kroppsdel övningen riktar sig mot. Passgeneratorn försöker växla mellan dessa.
-export type FocusArea = "Rygg" | "Knä";
+// Kroppsdel övningen riktar sig mot. Passgeneratorn kör strikt varannan
+// knä- och varannan bröstryggsövning.
+export type FocusArea = "Knä" | "Bröstrygg";
 
 export interface Exercise {
   id: string;
@@ -23,6 +24,9 @@ export interface Exercise {
   equipment?: string;
   // Standardtid i sekunder. Alla rehabövningar körs i 60 sekunder.
   defaultDuration: number;
+  // Sant för övningar där användaren byter sida/ben efter halva tiden -
+  // dessa får ett påminnelsepip vid halvtid.
+  switchSides?: boolean;
 }
 
 export interface WorkoutBlock {

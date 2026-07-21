@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useMemo, useRef, useState } from "react";
-import { unlockAudioContext } from "@/lib/audio";
+import { cancelSpeech, unlockAudioContext } from "@/lib/audio";
 import { buildWorkout } from "@/lib/buildWorkout";
 import { useAudio } from "@/hooks/useAudio";
 import { useTimer } from "@/hooks/useTimer";
@@ -23,16 +23,46 @@ export function useWorkout(soundEnabled: boolean) {
   // undvika att upprepa exakt samma ordning två pass i rad.
   const previousOrderRef = useRef<string[]>([]);
 
-  const { playNewBlock, playCountdown, playFinish } = useAudio(soundEnabled);
+  // Spegel av workout-statet för timer-callbacks (onBlockChange/onHalfway),
+  // som behöver slå upp övningen synkront utan att göra timern beroende av
+  // React-statets renderingscykel.
+  const workoutRef = useRef<Workout | null>(null);
+
+  const { playNewBlock, playCountdown, playHalfway, playFinish, announceExercise } =
+    useAudio(soundEnabled);
 
   const handleFinish = useCallback(() => {
     playFinish();
     setScreen("finished");
   }, [playFinish]);
 
+  // Startsignal + röstuppläsning av den nya övningens namn.
+  const handleBlockChange = useCallback(
+    (blockIndex: number) => {
+      playNewBlock();
+      const block = workoutRef.current?.blocks[blockIndex];
+      if (block) announceExercise(block.exercise.name);
+    },
+    [playNewBlock, announceExercise]
+  );
+
+  // Halvtidspip endast för övningar där användaren ska byta sida/ben.
+  const handleHalfway = useCallback(
+    (blockIndex: number) => {
+      const block = workoutRef.current?.blocks[blockIndex];
+      if (block?.exercise.switchSides) playHalfway();
+    },
+    [playHalfway]
+  );
+
   const timerCallbacks = useMemo(
-    () => ({ onFinish: handleFinish, onBlockChange: playNewBlock, onCountdown: playCountdown }),
-    [handleFinish, playNewBlock, playCountdown]
+    () => ({
+      onFinish: handleFinish,
+      onBlockChange: handleBlockChange,
+      onCountdown: playCountdown,
+      onHalfway: handleHalfway,
+    }),
+    [handleFinish, handleBlockChange, playCountdown, handleHalfway]
   );
 
   const { timerState, pause: pauseTimer, resume: resumeTimer, stop: stopTimer, skip: skipTimer } = useTimer(
@@ -52,8 +82,12 @@ export function useWorkout(soundEnabled: boolean) {
     }
     const nextWorkout = buildWorkout(previousOrderRef.current);
     previousOrderRef.current = nextWorkout.blocks.map((block) => block.exercise.id);
+    workoutRef.current = nextWorkout;
     setWorkout(nextWorkout);
     setScreen("workout");
+    // Uppläsningen av första övningen sker också synkront i knapptryckningen -
+    // det låser samtidigt upp talsyntesen för resten av passet (se lib/audio.ts).
+    announceExercise(nextWorkout.blocks[0].exercise.name);
   }
 
   // Paus giltigt endast från "workout", återuppta endast från "paused".
@@ -72,19 +106,28 @@ export function useWorkout(soundEnabled: boolean) {
   function stop() {
     if (screen !== "workout" && screen !== "paused") return;
     stopTimer();
+    cancelSpeech();
+    workoutRef.current = null;
     setWorkout(null);
     setScreen("start");
   }
 
   // Giltigt endast under pågående pass. skipTimer avslutar passet själv (via
-  // onFinish -> handleFinish) om det var sista övningen.
+  // onFinish -> handleFinish) om det var sista övningen. Ingen startsignal vid
+  // skip (avsiktligt tyst, se lib/timer.ts), men den nya övningens namn läses
+  // upp - övningen börjar ju nu.
   function skip() {
     if (screen !== "workout") return;
-    skipTimer();
+    const stateAfterSkip = skipTimer();
+    if (stateAfterSkip?.isRunning) {
+      const block = workoutRef.current?.blocks[stateAfterSkip.currentBlock];
+      if (block) announceExercise(block.exercise.name);
+    }
   }
 
   function goToStart() {
     if (screen !== "finished") return;
+    workoutRef.current = null;
     setWorkout(null);
     setScreen("start");
   }

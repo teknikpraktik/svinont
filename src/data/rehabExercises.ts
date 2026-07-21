@@ -1,55 +1,137 @@
 import type { Exercise } from "@/types/workout";
 
-// Svinonts övningsbank: 14 skonsamma rehabövningar för rygg och knä.
-// Varje pass använder samtliga övningar, en gång var, i 60 sekunder styck
-// (se lib/buildWorkout.ts). Ordningen sätts av passgeneratorn och varierar
-// mellan passen – listans ordning här har alltså ingen betydelse för passet.
+// Svinonts övningsbank: 7 knäövningar och 7 bröstryggsövningar.
+// Varje pass använder samtliga övningar, en gång var, i 60 sekunder styck.
+// Passgeneratorn (lib/buildWorkout.ts) kör strikt varannan knä, varannan
+// bröstrygg med slumpad startövning - listans ordning här spelar ingen roll.
 //
-// OBS: Det här är generiska rörlighets-/stabilitets-/styrkeövningar, INTE en
-// medicinsk ordination. Följ det som är ordinerat för just dig.
+// `switchSides: true` betyder att användaren ska byta sida/ben efter halva
+// tiden; de övningarna får ett påminnelsepip vid 30 sekunder.
+//
+// OBS: Det här är generiska rehabövningar, INTE en medicinsk ordination.
+// Följ det som är ordinerat för just dig.
 export const DEFAULT_EXERCISE_DURATION_SECONDS = 60;
 
 export const rehabExercises: Exercise[] = [
-  // --- Rygg ---
+  // --- Knä (7) ---
   {
-    id: "cat-camel",
-    name: "Cat-camel",
-    instruction: "Lugn rörelse mellan svank och rundad rygg.",
-    category: "Mobilitet",
-    focus: "Rygg",
-    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
-  },
-  {
-    id: "thoracic-rotation",
-    name: "Thorakal rotation",
-    instruction: "Rotera bröstryggen kontrollerat. Byt sida efter halva tiden.",
-    category: "Mobilitet",
-    focus: "Rygg",
-    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
-  },
-  {
-    id: "wall-slides",
-    name: "Wall slides",
-    instruction: "Rygg mot vägg. För armarna upp och ner med bibehållen kontakt.",
-    category: "Mobilitet",
-    focus: "Rygg",
-    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
-  },
-  {
-    id: "band-pull-aparts",
-    name: "Band pull-aparts",
-    instruction: "Dra bandet isär framför bröstet. Kläm ihop skulderbladen.",
+    id: "spanish-squat",
+    name: "Spansk knäböj",
+    instruction:
+      "Band bakom knävecken, fäst i dörrhandtag eller räcke. Sätt dig bakåt med rak rygg.",
     category: "Styrka",
-    focus: "Rygg",
+    focus: "Knä",
     equipment: "Träningsband",
     defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
   },
   {
-    id: "face-pulls",
-    name: "Face pulls",
-    instruction: "Dra bandet mot ansiktet. Armbågarna högt, axlarna avslappnade.",
+    id: "pain-free-squat",
+    name: "Knäböj i smärtfritt djup",
+    instruction: "Grundmönstret. Öka djupet successivt - håll dig smärtfri.",
     category: "Styrka",
-    focus: "Rygg",
+    focus: "Knä",
+    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
+  },
+  {
+    id: "step-down",
+    name: "Step-down",
+    instruction:
+      "Kontrollerad sänkning från låg kant. Knät i linje över foten. Byt ben efter halva tiden.",
+    category: "Styrka",
+    focus: "Knä",
+    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
+    switchSides: true,
+  },
+  {
+    id: "split-squat",
+    name: "Split squat",
+    instruction: "Dosera med steglängden. Byt ben efter halva tiden.",
+    category: "Styrka",
+    focus: "Knä",
+    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
+    switchSides: true,
+  },
+  {
+    id: "hip-abduction-band",
+    name: "Höftabduktion med band",
+    instruction:
+      "Band runt knäna. Sidosteg eller sidliggande lyft. Byt sida efter halva tiden.",
+    category: "Styrka",
+    focus: "Knä",
+    equipment: "Träningsband",
+    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
+    switchSides: true,
+  },
+  {
+    id: "single-leg-hip-thrust",
+    name: "Enbent höftlyft",
+    instruction: "Ett ben i golvet. Lyft höften rakt upp. Byt ben efter halva tiden.",
+    category: "Styrka",
+    focus: "Knä",
+    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
+    switchSides: true,
+  },
+  {
+    id: "single-leg-rdl",
+    name: "Enbent rumänsk marklyft",
+    instruction:
+      "Fäll framåt på ett ben med rak rygg. Stå på bandet för motstånd. Byt ben efter halva tiden.",
+    category: "Styrka",
+    focus: "Knä",
+    equipment: "Träningsband",
+    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
+    switchSides: true,
+  },
+  // --- Bröstrygg (7) ---
+  {
+    id: "open-book",
+    name: "Open book-rotation",
+    instruction:
+      "Sidliggande. Rotera övre armen ut och följ med blicken. Byt sida efter halva tiden.",
+    category: "Mobilitet",
+    focus: "Bröstrygg",
+    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
+    switchSides: true,
+  },
+  {
+    id: "cat-cow",
+    name: "Katt-ko",
+    instruction: "Mjuk genomrörelse mellan svank och rundad rygg.",
+    category: "Mobilitet",
+    focus: "Bröstrygg",
+    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
+  },
+  {
+    id: "chair-extension",
+    name: "Extension över stolsrygg",
+    instruction: "Luta dig bakåt över stolsryggens kant. Mjuka sträck bakåt.",
+    category: "Mobilitet",
+    focus: "Bröstrygg",
+    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
+  },
+  {
+    id: "childs-pose-breathing",
+    name: "Djupandning i barnets position",
+    instruction: "Knästående framåtfälld. Andas djupt in i revben och bröstrygg.",
+    category: "Mobilitet",
+    focus: "Bröstrygg",
+    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
+  },
+  {
+    id: "band-row",
+    name: "Rodd med band",
+    instruction: "Fäst bandet i dörr eller räcke. Dra mot magen, kläm ihop skulderbladen.",
+    category: "Styrka",
+    focus: "Bröstrygg",
+    equipment: "Träningsband",
+    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
+  },
+  {
+    id: "band-pull-apart",
+    name: "Pull-apart med band",
+    instruction: "Håll bandet framför dig, dra isär. Samla skulderbladen.",
+    category: "Styrka",
+    focus: "Bröstrygg",
     equipment: "Träningsband",
     defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
   },
@@ -58,73 +140,7 @@ export const rehabExercises: Exercise[] = [
     name: "Bird dog",
     instruction: "Sträck motsatt arm och ben. Håll bålen stabil. Växla sida.",
     category: "Stabilitet",
-    focus: "Rygg",
-    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
-  },
-  {
-    id: "dead-bug",
-    name: "Dead bug",
-    instruction: "Ligg på rygg. Sänk motsatt arm och ben, håll ländryggen stilla. Växla sida.",
-    category: "Stabilitet",
-    focus: "Rygg",
-    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
-  },
-  // --- Knä ---
-  {
-    id: "single-leg-balance",
-    name: "Enbensbalans",
-    instruction: "Stå stadigt på ett ben. Byt ben efter halva tiden.",
-    category: "Stabilitet",
-    focus: "Knä",
-    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
-  },
-  {
-    id: "wall-sit",
-    name: "Wall sit",
-    instruction: "Sitt mot väggen med knäna i cirka 90 grader. Håll positionen.",
-    category: "Styrka",
-    focus: "Knä",
-    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
-  },
-  {
-    id: "step-down",
-    name: "Step-down",
-    instruction: "Kontrollerad sänkning. Låt knät följa fotens riktning. Byt ben efter halva tiden.",
-    category: "Styrka",
-    focus: "Knä",
-    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
-  },
-  {
-    id: "lateral-band-walk",
-    name: "Sidogång med träningsband",
-    instruction: "Träningsband runt benen. Gå i sidled, byt riktning efter halva tiden.",
-    category: "Styrka",
-    focus: "Knä",
-    equipment: "Träningsband",
-    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
-  },
-  {
-    id: "single-leg-hip-thrust",
-    name: "Enbens höftlyft",
-    instruction: "Ett ben i golvet. Lyft höften rakt upp, sänk kontrollerat. Byt ben efter halva tiden.",
-    category: "Styrka",
-    focus: "Knä",
-    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
-  },
-  {
-    id: "single-leg-calf-raise",
-    name: "Enbens tåhävningar",
-    instruction: "Stå på ett ben. Res dig på tå och sänk långsamt. Byt ben efter halva tiden.",
-    category: "Styrka",
-    focus: "Knä",
-    defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
-  },
-  {
-    id: "gentle-knee-mobility",
-    name: "Lätt knärörlighet",
-    instruction: "Böj och sträck knät i skonsam, obelastad rörelse. Byt ben efter halva tiden.",
-    category: "Mobilitet",
-    focus: "Knä",
+    focus: "Bröstrygg",
     defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
   },
 ];

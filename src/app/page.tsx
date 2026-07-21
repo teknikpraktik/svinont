@@ -5,7 +5,7 @@ import StartScreen from "@/components/StartScreen";
 import WorkoutScreen from "@/components/WorkoutScreen";
 import { useSettings } from "@/hooks/useSettings";
 import { useWorkout } from "@/hooks/useWorkout";
-import { unlockAudioContext } from "@/lib/audio";
+import { unlockAudioContext, unlockSpeech } from "@/lib/audio";
 
 export default function Home() {
   const { settings, setSoundEnabled } = useSettings();
@@ -47,8 +47,11 @@ export default function Home() {
         // Måste låsas upp här också: om ljudet var avstängt när passet
         // startade och användaren slår på det med ikonen mitt i passet är
         // detta den enda riktiga knapptryckning webbläsaren har att låsa upp
-        // AudioContext med (se lib/audio.ts).
-        if (soundEnabled) unlockAudioContext();
+        // AudioContext och talsyntesen med (se lib/audio.ts).
+        if (soundEnabled) {
+          unlockAudioContext();
+          unlockSpeech();
+        }
         setSoundEnabled(soundEnabled);
       }}
     />

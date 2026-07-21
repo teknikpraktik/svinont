@@ -8,6 +8,7 @@ export interface UseTimerCallbacks {
   onFinish?: () => void;
   onBlockChange?: (blockIndex: number) => void;
   onCountdown?: (remainingSeconds: number) => void;
+  onHalfway?: (blockIndex: number) => void;
 }
 
 // Kopplar WorkoutTimer (ingen React-logik) till React-state. Timern startar
@@ -44,6 +45,7 @@ export function useTimer(workout: Workout | null, callbacks: UseTimerCallbacks =
       onTick: setTimerState,
       onBlockChange: (blockIndex) => callbacksRef.current.onBlockChange?.(blockIndex),
       onCountdown: (remainingSeconds) => callbacksRef.current.onCountdown?.(remainingSeconds),
+      onHalfway: (blockIndex) => callbacksRef.current.onHalfway?.(blockIndex),
       onFinish: () => callbacksRef.current.onFinish?.(),
     });
     timerRef.current = timer;
@@ -60,6 +62,12 @@ export function useTimer(workout: Workout | null, callbacks: UseTimerCallbacks =
     pause: () => timerRef.current?.pause(),
     resume: () => timerRef.current?.resume(),
     stop: () => timerRef.current?.stop(),
-    skip: () => timerRef.current?.skip(),
+    // Returnerar timerns läge efter hoppet, så att anroparen synkront kan
+    // läsa vilken övning som blev aktuell (React-statet uppdateras först i
+    // nästa rendering).
+    skip: () => {
+      timerRef.current?.skip();
+      return timerRef.current?.getState() ?? null;
+    },
   };
 }

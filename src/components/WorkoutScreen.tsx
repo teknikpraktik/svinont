@@ -19,6 +19,10 @@ interface WorkoutScreenProps {
   onSoundEnabledChange: (soundEnabled: boolean) => void;
 }
 
+// Under de sista sekunderna av en övning förhandsvisas nästa övning, så att
+// användaren hinner byta position/utrustning utan att tappa tempo.
+const NEXT_UP_SECONDS = 10;
+
 export default function WorkoutScreen({
   blocks,
   block,
@@ -32,6 +36,9 @@ export default function WorkoutScreen({
   onSoundEnabledChange,
 }: WorkoutScreenProps) {
   const exerciseProgress = getExerciseProgress(blocks, timerState.currentBlock);
+
+  const nextBlock = blocks[timerState.currentBlock + 1] ?? null;
+  const showNextUp = nextBlock !== null && timerState.remainingSeconds <= NEXT_UP_SECONDS;
 
   return (
     <div className={styles.screen}>
@@ -54,6 +61,11 @@ export default function WorkoutScreen({
       <div className={styles.content}>
         <ExerciseCard name={block.exercise.name} instruction={block.exercise.instruction} />
         <WorkoutProgress current={exerciseProgress.current} total={exerciseProgress.total} />
+        {/* Raden reserverar sin höjd även när den är tom, så att layouten
+            inte hoppar när förhandsvisningen dyker upp. */}
+        <p className={styles.nextUp}>
+          {showNextUp ? `Nästa övning: ${nextBlock.exercise.name}` : " "}
+        </p>
       </div>
 
       <div className={styles.skipRow}>

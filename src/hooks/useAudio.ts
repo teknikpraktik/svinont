@@ -1,7 +1,13 @@
 "use client";
 
 import { useCallback } from "react";
-import { playCountdownBeep, playFinishSound, playNewBlockSound } from "@/lib/audio";
+import {
+  playCountdownBeep,
+  playFinishSound,
+  playHalfwayBeep,
+  playNewBlockSound,
+  speakExerciseName,
+} from "@/lib/audio";
 
 // Spelar ljud endast om inställningen är påslagen (C.19: "Ljud ska kunna
 // stängas av"). Hooken innehåller ingen ljudlogik själv, den använder bara
@@ -15,9 +21,20 @@ export function useAudio(enabled: boolean) {
     if (enabled) playCountdownBeep();
   }, [enabled]);
 
+  const playHalfway = useCallback(() => {
+    if (enabled) playHalfwayBeep();
+  }, [enabled]);
+
   const playFinish = useCallback(() => {
     if (enabled) playFinishSound();
   }, [enabled]);
 
-  return { playNewBlock, playCountdown, playFinish };
+  const announceExercise = useCallback(
+    (name: string) => {
+      if (enabled) speakExerciseName(name);
+    },
+    [enabled]
+  );
+
+  return { playNewBlock, playCountdown, playHalfway, playFinish, announceExercise };
 }
