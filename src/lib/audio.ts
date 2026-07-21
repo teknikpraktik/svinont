@@ -74,12 +74,12 @@ export function playCountdownBeep(): void {
   playTone(context, 880, 0.08);
 }
 
-// Halvtidsmarkering (30 s kvar): ett enkelt pip, tonhöjdsmässigt skilt från
-// nedräkningens pip (880 Hz) och startsignalen (1760 Hz, längre).
+// Halvtidsmarkering (30 s kvar): ett enkelt, dovt pip - lägre än nedräkningens
+// 880 Hz men tydligt över den ännu dovare startsignalen (392 Hz).
 export function playHalfwayBeep(): void {
   const context = getAudioContext();
   if (!context) return;
-  playTone(context, 987.77, 0.1);
+  playTone(context, 523.25, 0.12);
 }
 
 export function playFinishSound(): void {
