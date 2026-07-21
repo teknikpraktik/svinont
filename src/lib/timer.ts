@@ -56,13 +56,13 @@ export class WorkoutTimer {
     return { ...this.state };
   }
 
+  // "Armerar" timern: ställer den i väntläge på första övningen. Klockan
+  // startar först när användaren trycker igång övningen (startNextBlock) -
+  // samma flöde som mellan alla andra övningar.
   start(): void {
-    if (this.state.isRunning || this.blockDurationsSeconds.length === 0) return;
+    if (this.state.isRunning || this.state.isAwaitingNext || this.blockDurationsSeconds.length === 0) return;
 
-    this.blockDeadline = Date.now() + this.blockDurationsSeconds[this.state.currentBlock] * 1000;
-    this.state = { ...this.state, isRunning: true, isPaused: false };
-    this.beginTicking();
-    this.emit();
+    this.enterAwaitNext(0);
   }
 
   pause(): void {

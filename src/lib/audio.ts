@@ -28,8 +28,10 @@ function playTone(context: AudioContext, frequency: number, durationSeconds: num
   const startTime = context.currentTime + startDelay;
   const endTime = startTime + durationSeconds;
 
+  // 0.4 snarare än lägre: på mobilhögtalare utomhus/i rörelse drunknar
+  // svagare toner lätt. Fortfarande mjuk attack/release så det inte skrämmer.
   gain.gain.setValueAtTime(0, startTime);
-  gain.gain.linearRampToValueAtTime(0.2, startTime + 0.02);
+  gain.gain.linearRampToValueAtTime(0.4, startTime + 0.02);
   gain.gain.linearRampToValueAtTime(0, endTime);
 
   oscillator.connect(gain);
@@ -57,13 +59,12 @@ export function unlockAudioContext(): void {
   oscillator.stop(context.currentTime + 0.001);
 }
 
-// Avslutar 3-2-1-nedräkningen (playCountdownBeep) precis som ett
-// skidskyttestarts sista, ljusare ton - högre och längre än nedräkningens
-// korta pip, så det känns som en startsignal snarare än en nedtoning.
+// Startsignal när en övning börjar: längre och något ljusare än nedräkningens
+// korta pip, men inte skarpt högfrekvent (1760 Hz upplevdes för gällt).
 export function playNewBlockSound(): void {
   const context = getAudioContext();
   if (!context) return;
-  playTone(context, 1760, 0.15);
+  playTone(context, 1174.66, 0.15);
 }
 
 export function playCountdownBeep(): void {

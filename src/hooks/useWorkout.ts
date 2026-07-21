@@ -13,9 +13,10 @@ import type { Screen, Workout } from "@/types/workout";
 // rehab-övningsbanken (buildWorkout) och kan inte misslyckas - därför inget
 // felhanterings-/återförsöksflöde och ingen settings-parameter till start().
 //
-// När en övning löper ut går timern i väntläge (timerState.isAwaitingNext):
-// nästa övning visas med full tid, men klockan startar först när användaren
-// trycker igång den via startNextExercise().
+// Varje övning - även den första - startas av användaren: timern står i
+// väntläge (timerState.isAwaitingNext) med övningen synlig och full tid, och
+// klockan startar först via startNextExercise(). Efter en avslutad övning
+// återgår timern till väntläget för nästa.
 //
 // soundEnabled tas emot live (inte som en frusen kopia) eftersom ljudikonen
 // visas och kan togglas på WorkoutScreen medan passet pågår.
@@ -56,7 +57,8 @@ export function useWorkout(soundEnabled: boolean) {
   // Skärmen ska inte dimmas/släckas så länge ett pass pågår, även vid paus.
   useWakeLock(workout !== null);
 
-  // Passet byggs och startar direkt vid knapptryckningen.
+  // Passet byggs direkt vid knapptryckningen; timern ställer sig i väntläge
+  // på första övningen, som användaren sedan startar själv.
   function start() {
     // Måste ske synkront här, i själva knapptryckningen, annars förblir
     // ljudet permanent avstängt på mobila webbläsare (se lib/audio.ts).

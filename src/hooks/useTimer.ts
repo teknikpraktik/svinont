@@ -11,10 +11,11 @@ export interface UseTimerCallbacks {
   onHalfway?: (blockIndex: number) => void;
 }
 
-// Kopplar WorkoutTimer (ingen React-logik) till React-state. Timern startar
-// automatiskt så fort ett workout ges, och stoppas/städas bort när det
-// tas bort eller byts ut. All state uppdateras uteslutande via timerns
-// egna callbacks (onTick), aldrig direkt i effektens kropp.
+// Kopplar WorkoutTimer (ingen React-logik) till React-state. Timern ställer
+// sig i väntläge på första övningen så fort ett workout ges (klockan startar
+// först via startNextBlock), och stoppas/städas bort när workoutet tas bort
+// eller byts ut. All state uppdateras uteslutande via timerns egna callbacks
+// (onTick), aldrig direkt i effektens kropp.
 export function useTimer(workout: Workout | null, callbacks: UseTimerCallbacks = {}) {
   // Sätts direkt från passets första block istället för 0, annars hinner
   // TimerDisplay-ringen rendera en tom cirkel (fraction 0) innan timerns

@@ -67,11 +67,9 @@ export const rehabExercises: Exercise[] = [
   {
     id: "single-leg-rdl",
     name: "Enbent rumänsk marklyft",
-    instruction:
-      "Fäll framåt på ett ben med rak rygg. Stå på bandet för motstånd. Byt ben efter halva tiden.",
+    instruction: "Fäll framåt på ett ben med rak rygg. Byt ben efter halva tiden.",
     category: "Styrka",
     focus: "Knä",
-    equipment: "Träningsband",
     defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
   },
   // --- Bröstrygg (7) ---

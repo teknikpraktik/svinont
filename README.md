@@ -26,9 +26,8 @@ Alla 14 övningar är alltid med – det som varierar är ordningen:
 
 - Ett pip vid halvtid (30 s kvar) - t.ex. som sidbytesmarkering.
 - Nedräkningspip vid 3-2-1 och en startsignal när en övning börjar.
-- Under de sista 10 sekunderna visas "Nästa övning: …".
-- När en övning är klar väntar appen: nästa övning visas med full tid och
-  startar först när användaren trycker på Starta.
+- Varje övning - även den första - startar först när användaren trycker på
+  Starta; däremellan visas övningen med full tid och klockan står stilla.
 
 ## Kör lokalt
 

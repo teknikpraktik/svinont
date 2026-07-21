@@ -46,17 +46,6 @@
   gap: 0.75rem;
 }
 
-/* Förhandsvisning av nästa övning under passets sista sekunder. min-height
-   håller platsen även när texten är tom, så layouten inte hoppar. */
-.nextUp {
-  min-height: 1.4rem;
-  font-size: 0.95rem;
-  font-weight: 600;
-  line-height: 1.4;
-  color: var(--muted);
-  text-align: center;
-}
-
 .skipRow {
   display: flex;
   justify-content: flex-end;
