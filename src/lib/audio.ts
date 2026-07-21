@@ -70,10 +70,12 @@ export function playNewBlockSound(): void {
   playTone(context, 587.33, 0.2);
 }
 
+// Nedräkningspip 3-2-1: sänkt från 880 Hz i linje med de dovare signalerna,
+// men fortfarande ljusast i hierarkin så nedräkningen sticker ut.
 export function playCountdownBeep(): void {
   const context = getAudioContext();
   if (!context) return;
-  playTone(context, 880, 0.08);
+  playTone(context, 659.25, 0.1);
 }
 
 // Halvtidsmarkering (30 s kvar): ett enkelt, dovt pip - lägre än nedräkningens
