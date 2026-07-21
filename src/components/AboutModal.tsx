@@ -7,43 +7,28 @@ interface AboutModalProps {
   onClose: () => void;
 }
 
-// Kort om-text för Svinont. Uppdatera vid behov med disclaimer om att
-// övningarna inte ersätter medicinsk rådgivning.
 export default function AboutModal({ isOpen, onClose }: AboutModalProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className={styles.text}>
         <h2 className={styles.title}>Om Svinont</h2>
 
-        <p className={styles.intro}>
-          Ett lugnt rehabprogram – tryck igång och följ med, en övning i taget.
-        </p>
         <p>
-          Systerapp till Svinstark med samma passupplägg: en tydlig timer,
-          ljudsignal vid varje ny övning och en nedräkning på slutet. Svinont kör
-          hela din rehab för rygg och knä varje gång, en minut per övning. Inga
-          val – ordningen varieras åt dig från pass till pass.
+          Svinont hjälper dig att genomföra ett enkelt dagligt rehabpass. Alla
+          övningar ingår i varje pass, men ordningen varierar för att skapa ett
+          omväxlande och balanserat upplägg.
         </p>
-
-        <h3>Så funkar det</h3>
-        <ul>
-          <li>Tryck Starta pass – programmet börjar direkt.</li>
-          <li>Varje övning pågår i en minut.</li>
-          <li>En signal ljuder när det är dags att byta.</li>
-        </ul>
 
         <p className={styles.disclaimer}>
-          Övningarna ersätter inte råd från läkare eller fysioterapeut. Följ det
-          som är ordinerat för just dig.
+          Appen ersätter inte individuell bedömning eller behandling av
+          fysioterapeut, läkare eller annan vårdpersonal. Anpassa alltid
+          träningen efter dina egna besvär och avbryt om smärtan ökar tydligt
+          eller om nya symtom uppstår.
         </p>
 
-        <h3>Feedback</h3>
         <p>
-          Har du synpunkter eller hittat en bugg?{" "}
-          <a className={styles.link} href="mailto:per.a.bjorkman@gmail.com">
-            Mejla mig
-          </a>
-          .
+          Målet är enkelt: mindre friktion, bättre kontinuitet och en rehab som
+          faktiskt blir av.
         </p>
       </div>
 

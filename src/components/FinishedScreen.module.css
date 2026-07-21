@@ -27,21 +27,19 @@
   color: var(--muted);
 }
 
-.actions {
+/* Vit knapp: samma form som PrimaryButton men vit bakgrund med mörk text.
+   Kantlinjen behövs för att knappen ska synas mot ljus bakgrund i ljust läge. */
+.homeButton {
   width: 100%;
   max-width: 22rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-}
-
-.secondaryButton {
-  min-height: 44px;
-  padding: 0.5rem 1rem;
-  border: none;
-  background: transparent;
-  color: var(--muted);
-  font-size: 1rem;
+  min-height: 56px;
+  padding: 0.75rem 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: #ffffff;
+  color: #171717;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
   cursor: pointer;
 }

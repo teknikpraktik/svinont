@@ -8,7 +8,7 @@ import PrimaryButton from "@/components/PrimaryButton";
 import { rehabExercises } from "@/data/rehabExercises";
 import styles from "./StartScreen.module.css";
 
-const valueProps = ["Rehab", "Rörlighet", "Skonsamt"];
+const valueProps = ["Funktion", "Rörlighet", "Kontroll"];
 
 // Antal övningar × en minut = programmets totala längd.
 const exerciseCount = rehabExercises.length;
@@ -44,9 +44,8 @@ export default function StartScreen({ onStart }: StartScreenProps) {
 
       <div className={styles.summary}>
         <p className={styles.summaryLine}>
-          {exerciseCount} övningar · ca {exerciseCount} min
+          {exerciseCount} övningar på {exerciseCount} minuter
         </p>
-        <p className={styles.summaryHint}>Dagens rehab för rygg och knä. Tryck igång och följ med.</p>
       </div>
 
       <PrimaryButton onClick={onStart}>Starta pass</PrimaryButton>

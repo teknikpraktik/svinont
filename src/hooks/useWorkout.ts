@@ -43,8 +43,7 @@ export function useWorkout(soundEnabled: boolean) {
   // Skärmen ska inte dimmas/släckas så länge ett pass pågår, även vid paus.
   useWakeLock(workout !== null);
 
-  // Passet byggs och startar direkt vid knapptryckningen. Används både från
-  // startsidan och från slutsidans "Starta nytt pass".
+  // Passet byggs och startar direkt vid knapptryckningen.
   function start() {
     // Måste ske synkront här, i själva knapptryckningen, annars förblir
     // ljudet permanent avstängt på mobila webbläsare (se lib/audio.ts).

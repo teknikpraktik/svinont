@@ -19,7 +19,7 @@ export interface Exercise {
   instruction: string;
   category: ExerciseCategory;
   focus: FocusArea;
-  // Utrustning som behövs, t.ex. "Miniband". Utelämnas om ingen krävs.
+  // Utrustning som behövs, t.ex. "Träningsband". Utelämnas om ingen krävs.
   equipment?: string;
   // Standardtid i sekunder. Alla rehabövningar körs i 60 sekunder.
   defaultDuration: number;

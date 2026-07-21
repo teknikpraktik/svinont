@@ -36,5 +36,3 @@ npm run dev
 - **Justera övningarna** i `src/data/rehabExercises.ts` efter det som är
   ordinerat för dig. De som ligger där nu är generiska rehabövningar, inte en
   medicinsk ordination.
-- Ersätt platshållar-ikonerna i `public/icons/` och `public/og-image.png`
-  (kopior från Svinstark – visar fortfarande SS-märket).

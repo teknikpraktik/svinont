@@ -27,7 +27,7 @@ export default function Home() {
   }
 
   if (screen === "finished") {
-    return <FinishedScreen onStartNew={start} onGoToStart={goToStart} />;
+    return <FinishedScreen onGoToStart={goToStart} />;
   }
 
   if (!currentBlock || !workout) return null;
