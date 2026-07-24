@@ -12,13 +12,12 @@ export const DEFAULT_EXERCISE_DURATION_SECONDS = 60;
 export const rehabExercises: Exercise[] = [
   // --- Knä (7) ---
   {
-    id: "spanish-squat",
-    name: "Spansk knäböj",
+    id: "wall-sit",
+    name: "Jägarvila",
     instruction:
-      "Band bakom knävecken, fäst i dörrhandtag eller räcke. Sätt dig bakåt med rak rygg.",
+      "Rygg mot vägg, glid ner tills knäna är i 90 grader. Håll rak rygg och stilla position.",
     category: "Styrka",
     focus: "Knä",
-    equipment: "Träningsband",
     defaultDuration: DEFAULT_EXERCISE_DURATION_SECONDS,
   },
   {
